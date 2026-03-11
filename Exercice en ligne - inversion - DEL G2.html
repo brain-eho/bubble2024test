@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Duel de l'Inversion – Exercice de Français</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1008;
+    --cream: #fdf6e3;
+    --gold: #b07d1a;
+    --gold-light: #d4a830;
+    --red: #b83232;
+    --green: #2a7a4b;
+    --blue: #1d4e8f;
+    --purple: #5a2d82;
+    --card-bg: #ffffff;
+    --body-bg: #f4f0e8;
+    --text-main: #1a1008;
+    --text-soft: #5a4e3a;
+    --border: rgba(26,16,8,0.12);
+    --shadow: 0 8px 40px rgba(26,16,8,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--body-bg);
+    background-image:
+      radial-gradient(ellipse at 15% 10%, #ede5d0 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 90%, #dde8f5 0%, transparent 55%);
+    font-family: 'Libre Baskerville', serif;
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; }
+  .screen.active { display: flex; }
+
+  /* ── INTRO SCREEN ── */
+  #intro {
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    background: var(--gold);
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    padding: .4rem 1.2rem;
+    border-radius: 2px;
+  }
+
+  h1.title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: .95;
+    letter-spacing: -.02em;
+    color: var(--ink);
+  }
+  h1.title em { color: var(--gold); font-style: italic; }
+
+  .subtitle {
+    font-size: 1.1rem;
+    color: var(--text-soft);
+    max-width: 480px;
+    line-height: 1.7;
+  }
+
+  /* Rules card */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    max-width: 820px;
+    width: 100%;
+  }
+  .rule-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem 1.4rem;
+    text-align: left;
+    box-shadow: 0 2px 12px rgba(26,16,8,0.06);
+  }
+  .rule-card .rule-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: .4rem;
+  }
+  .rule-card p { font-size: .88rem; color: var(--text-soft); line-height: 1.5; }
+
+  /* Inversion recap */
+  .recap-table {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.4rem 2rem;
+    max-width: 780px;
+    width: 100%;
+    box-shadow: 0 2px 12px rgba(26,16,8,0.06);
+  }
+  .recap-table h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+  }
+  .recap-rows { display: flex; flex-direction: column; gap: .6rem; }
+  .recap-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    align-items: center;
+    font-size: .88rem;
+    padding: .5rem 0;
+    border-bottom: 1px solid rgba(26,16,8,0.07);
+  }
+  .recap-row:last-child { border: none; }
+  .recap-row .tag {
+    background: rgba(176,125,26,0.1);
+    color: var(--gold);
+    padding: .2rem .7rem;
+    border-radius: 3px;
+    font-size: .75rem;
+    font-family: 'DM Mono', monospace;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .recap-row .arrow { color: var(--text-soft); font-size: 1.2rem; text-align: center; }
+  .recap-row .example { font-family: 'DM Mono', monospace; color: var(--text-soft); }
+  .recap-row .result { font-family: 'DM Mono', monospace; color: var(--gold); font-weight: 700; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: .6rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: .9rem 2.4rem;
+    border: none; border-radius: 4px;
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: .04em;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--gold); color: var(--ink); }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(200,146,42,.4); }
+  .btn-secondary { background: transparent; color: var(--cream); border: 1.5px solid rgba(255,255,255,0.3); }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-sm { font-size: .85rem; padding: .6rem 1.4rem; }
+  .btn-danger { background: var(--red); color: white; }
+  .btn-danger:hover { background: #d04444; }
+  .btn-success { background: var(--green); color: white; }
+  .btn-success:hover { background: #37a063; }
+
+  /* ── GAME SCREEN ── */
+  #game { padding: 1.5rem; gap: 1.2rem; justify-content: flex-start; }
+
+  .game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 900px;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  /* Scores */
+  .scores { display: flex; gap: 1.2rem; }
+  .score-box {
+    display: flex; flex-direction: column; align-items: center;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: .7rem 1.4rem;
+    min-width: 110px;
+    position: relative;
+    transition: all .3s;
+    box-shadow: 0 2px 8px rgba(26,16,8,0.06);
+  }
+  .score-box.active-player {
+    background: #fffbf0;
+    border: 1.5px solid var(--gold);
+    box-shadow: 0 0 20px rgba(176,125,26,0.18);
+  }
+  .score-box .player-name { font-size: .7rem; color: var(--text-soft); text-transform: uppercase; letter-spacing: .12em; margin-bottom: .2rem; }
+  .score-box .score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .score-box .player-label {
+    font-size: .7rem;
+    margin-top: .2rem;
+    color: var(--text-soft);
+  }
+  .score-box.active-player .player-label { color: var(--gold); font-weight: 700; }
+
+  /* Timer */
+  .timer-wrap { text-align: center; }
+  .timer-display {
+    font-family: 'DM Mono', monospace;
+    font-size: 2.4rem;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: .05em;
+    line-height: 1;
+  }
+  .timer-display.warning { color: #c07010; animation: pulse 1s infinite; }
+  .timer-display.danger { color: var(--red); }
+  .timer-label { font-size: .65rem; color: var(--text-soft); text-transform: uppercase; letter-spacing: .15em; margin-top: .2rem; }
+
+  /* Progress */
+  .progress-wrap { display: flex; align-items: center; gap: .8rem; }
+  .progress-text { font-size: .8rem; color: var(--text-soft); white-space: nowrap; }
+  .progress-bar {
+    width: 120px; height: 4px;
+    background: rgba(26,16,8,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: width .5s ease;
+  }
+
+  /* ── CARD ── */
+  .card-arena { width: 100%; max-width: 900px; }
+
+  .card {
+    background: var(--card-bg);
+    color: var(--ink);
+    border-radius: 14px;
+    padding: 2.5rem 3rem;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+  }
+  .card.cat-facile::before { background: var(--green); }
+  .card.cat-moyenne::before { background: var(--blue); }
+  .card.cat-difficile::before { background: var(--purple); }
+  .card.cat-piege::before { background: var(--red); }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .8rem;
+  }
+
+  .cat-badge {
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: .35rem .9rem;
+    border-radius: 3px;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+  .cat-facile { background: rgba(42,122,75,0.12); color: var(--green); }
+  .cat-moyenne { background: rgba(29,78,143,0.12); color: var(--blue); }
+  .cat-difficile { background: rgba(90,45,130,0.12); color: var(--purple); }
+  .cat-piege { background: rgba(184,50,50,0.12); color: var(--red); }
+
+  .type-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem;
+    color: var(--text-soft);
+    letter-spacing: .05em;
+    background: rgba(26,16,8,0.06);
+    padding: .3rem .8rem;
+    border-radius: 3px;
+  }
+
+  .points-badge {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--gold);
+  }
+
+  .card-question {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .turn-indicator {
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--text-soft);
+  }
+
+  .phrase-affirmative {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ink);
+  }
+
+  .hint-text {
+    font-size: .85rem;
+    font-style: italic;
+    opacity: .55;
+    border-left: 3px solid var(--gold);
+    padding-left: .8rem;
+    line-height: 1.5;
+  }
+
+  /* Answer reveal */
+  .answer-section {
+    background: rgba(26,16,8,0.04);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    border: 1.5px dashed rgba(26,16,8,0.12);
+    transition: all .4s;
+  }
+  .answer-section.revealed {
+    border-color: var(--green);
+    background: rgba(42,122,75,0.06);
+  }
+  .answer-label {
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    opacity: .4;
+    margin-bottom: .5rem;
+    font-family: 'DM Mono', monospace;
+  }
+  .answer-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: transparent;
+    background: rgba(26,16,8,0.12);
+    border-radius: 4px;
+    user-select: none;
+    transition: color .4s, background .4s;
+    display: inline-block;
+    padding: .1rem .5rem;
+  }
+  .answer-section.revealed .answer-text {
+    color: var(--green);
+    background: transparent;
+  }
+  .answer-explanation {
+    font-size: .82rem;
+    margin-top: .6rem;
+    opacity: 0;
+    line-height: 1.6;
+    transition: opacity .4s .2s;
+    color: #444;
+  }
+  .answer-section.revealed .answer-explanation { opacity: 1; }
+
+  .piege-alert {
+    display: none !important;
+    background: rgba(184,50,50,0.08);
+    border: 1px solid rgba(184,50,50,0.3);
+    border-radius: 6px;
+    padding: .7rem 1rem;
+    font-size: .82rem;
+    color: var(--red);
+    line-height: 1.5;
+    margin-top: .5rem;
+  }
+  .answer-section.revealed .piege-alert.show { display: flex !important; gap: .6rem; }
+
+  /* Card actions */
+  .card-actions {
+    display: flex;
+    gap: .8rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .action-left, .action-right { display: flex; gap: .6rem; flex-wrap: wrap; }
+
+  /* ── RESULT SCREEN ── */
+  #result { gap: 2rem; text-align: center; }
+  .result-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 900;
+    color: var(--ink);
+  }
+  .result-title em { color: var(--gold); font-style: italic; }
+
+  .podium {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-end;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .podium-box {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    min-width: 180px;
+    box-shadow: 0 2px 12px rgba(26,16,8,0.06);
+  }
+  .podium-box.winner {
+    background: #fffbf0;
+    border: 2px solid var(--gold);
+    padding-bottom: 2rem;
+    box-shadow: 0 4px 24px rgba(176,125,26,0.2);
+  }
+  .podium-place { font-size: 2rem; }
+  .podium-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--ink); }
+  .podium-score { font-family: 'DM Mono', monospace; font-size: 1rem; color: var(--gold); }
+
+  .stats-row {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    color: var(--text-soft);
+    font-size: .85rem;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes bounceIn { 0% { transform: scale(.8); opacity: 0; } 60% { transform: scale(1.05); } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes confetti { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+
+  .card { animation: slideIn .35s ease; }
+
+  .score-bump { animation: bounceIn .4s ease; }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    width: 10px; height: 10px;
+    top: -20px;
+    animation: confetti 3s ease-in forwards;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* ── PRINT SUPPORT SHEET ── */
+  .print-btn-wrap { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100; }
+
+  @media print {
+    body { background: white; color: black; }
+    .screen { display: none !important; }
+    #print-sheet { display: block !important; }
+    .no-print { display: none !important; }
+  }
+
+  #print-sheet {
+    display: none;
+    padding: 2rem;
+    font-family: 'Libre Baskerville', serif;
+    color: black;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .card { padding: 1.5rem; }
+    .scores { gap: .6rem; }
+    .score-box { min-width: 80px; padding: .5rem .8rem; }
+    .recap-row { grid-template-columns: 1fr; }
+    .recap-row .arrow { display: none; }
+  }
+
+  /* Divider */
+  .divider { width: 60px; height: 3px; background: var(--gold); opacity: .4; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ INTRO SCREEN ═══════════════════════ -->
+<div id="intro" class="screen active">
+  <div class="logo-badge">🎭 Exercice oral en binôme · 15 minutes</div>
+
+  <h1 class="title">Le Duel de<br><em>l'Inversion</em></h1>
+  <p class="subtitle">Inversion simple, -t- euphonique et inversion complexe (<em>Marie est-elle…</em>). À vous de jouer en duel&nbsp;!</p>
+
+  <div class="divider"></div>
+
+  <div class="rules-grid">
+    <div class="rule-card">
+      <div class="rule-num">01</div>
+      <p>Le joueur actif lit la phrase à voix haute et propose sa transformation interrogative <strong>à l'oral</strong>.</p>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">02</div>
+      <p>L'adversaire écoute attentivement. Si la réponse est erronée, il peut <strong>contester et tenter à son tour</strong> pour les points&nbsp;!</p>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">03</div>
+      <p>Cliquez sur <em>Révéler</em> pour corriger ensemble, puis attribuez les points. Les <strong>pièges</strong> valent double.</p>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">04</div>
+      <p>Fin du temps ou des cartes = victoire au score le plus élevé. En cas d'égalité : tirage au sort de la dernière carte !</p>
+    </div>
+  </div>
+
+  <div class="recap-table">
+    <h3>⚡ Aide-mémoire : les types d'inversion de cet exercice</h3>
+    <div class="recap-rows">
+      <div class="recap-row">
+        <span class="example">Tu viens.</span>
+        <span class="arrow">→</span>
+        <span class="result">Viens-tu&nbsp;?</span>
+      </div>
+      <div class="recap-row">
+        <span class="example">Il parle. / Elle aime.</span>
+        <span class="arrow">→</span>
+        <span class="result">Parle-t-il&nbsp;? / Aime-t-elle&nbsp;? <em style="opacity:.5;font-size:.8em">(-t- euphonique)</em></span>
+      </div>
+      <div class="recap-row">
+        <span class="example">Marie est heureuse.</span>
+        <span class="arrow">→</span>
+        <span class="result">Marie est-elle heureuse&nbsp;? <em style="opacity:.5;font-size:.8em">(inversion complexe)</em></span>
+      </div>
+      <div class="recap-row">
+        <span class="example">Sophie aime la musique.</span>
+        <span class="arrow">→</span>
+        <span class="result">Sophie aime-t-elle la musique&nbsp;? <em style="opacity:.5;font-size:.8em">(complexe + -t-)</em></span>
+      </div>
+      <div class="recap-row">
+        <span class="example">Il a mangé.</span>
+        <span class="arrow">→</span>
+        <span class="result">A-t-il mangé&nbsp;? <em style="opacity:.5;font-size:.8em">(temps composé)</em></span>
+      </div>
+      <div class="recap-row">
+        <span class="example">Il répond. / Il attend.</span>
+        <span class="arrow">→</span>
+        <span class="result">Répond-il&nbsp;? / Attend-il&nbsp;? <em style="opacity:.5;font-size:.8em">(pas de -t- ajouté !)</em></span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;align-items:center;">
+    <button class="btn btn-primary" onclick="startGame()">▶ Commencer le duel</button>
+    <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨 Imprimer la fiche support</button>
+  </div>
+  <p style="font-size:.75rem;opacity:.3;margin-top:.5rem;">Appuyez sur <kbd style="background:rgba(255,255,255,.1);padding:.1rem .4rem;border-radius:3px;">Espace</kbd> pour révéler la réponse</p>
+</div>
+
+<!-- ═══════════════════════ GAME SCREEN ═══════════════════════ -->
+<div id="game" class="screen">
+  <div class="game-header">
+    <div class="scores">
+      <div class="score-box active-player" id="score1">
+        <div class="player-name">Joueur 1</div>
+        <div class="score-num" id="s1">0</div>
+        <div class="player-label">✦ à toi !</div>
+      </div>
+      <div class="score-box" id="score2">
+        <div class="player-name">Joueur 2</div>
+        <div class="score-num" id="s2">0</div>
+        <div class="player-label">en attente…</div>
+      </div>
+    </div>
+
+    <div class="timer-wrap">
+      <div class="timer-display" id="timer">20:00</div>
+      <div class="timer-label">temps restant</div>
+    </div>
+
+    <div class="progress-wrap">
+      <span class="progress-text" id="progress-text">1 / 28</span>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="card-arena">
+    <div class="card cat-facile" id="main-card">
+      <div class="card-meta">
+        <span class="cat-badge cat-facile" id="card-cat">⬤ Facile</span>
+        <span class="type-badge" id="card-type">Inversion simple</span>
+        <span class="points-badge" id="card-pts">+1 pt</span>
+      </div>
+
+      <div class="card-question">
+        <div class="turn-indicator" id="turn-indicator">→ Tour du Joueur 1</div>
+        <div class="phrase-affirmative" id="phrase-text"></div>
+        <div class="hint-text" id="hint-text"></div>
+      </div>
+
+      <div class="answer-section" id="answer-section">
+        <div class="answer-label">Réponse interrogative</div>
+        <div class="answer-text" id="answer-text"></div>
+        <div class="answer-explanation" id="answer-explanation"></div>
+        <div class="piege-alert" id="piege-alert">
+          <span>⚠️</span><span id="piege-text"></span>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <div class="action-left">
+          <button class="btn btn-secondary btn-sm" onclick="revealAnswer()" id="reveal-btn">👁 Révéler la réponse</button>
+        </div>
+        <div class="action-right" id="score-btns" style="display:none;">
+          <button class="btn btn-success btn-sm" onclick="givePoint(1)">✓ Joueur 1 (+<span id="pts-label1">1</span>)</button>
+          <button class="btn btn-success btn-sm" onclick="givePoint(2)">✓ Joueur 2 (+<span id="pts-label2">1</span>)</button>
+          <button class="btn btn-danger btn-sm" onclick="nextCard()">✗ Aucun point → Suite</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ RESULT SCREEN ═══════════════════════ -->
+<div id="result" class="screen">
+  <div class="logo-badge">🏆 Fin de la partie</div>
+  <h2 class="result-title" id="result-title">Bravo <em id="winner-name">Joueur 1</em>&nbsp;!</h2>
+  <div class="podium" id="podium"></div>
+  <div class="stats-row" id="stats-row"></div>
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
+    <button class="btn btn-primary" onclick="resetGame()">↺ Rejouer</button>
+    <button class="btn btn-secondary" onclick="window.print()">🖨 Imprimer</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ PRINT SHEET ═══════════════════════ -->
+<div id="print-sheet">
+  <h1 style="font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:.5rem;">Le Duel de l'Inversion</h1>
+  <p style="font-size:.85rem;opacity:.6;margin-bottom:1.5rem;">Fiche support – Exercice oral en binôme · 20 minutes</p>
+
+  <h2 style="font-size:1.1rem;border-bottom:2px solid #c8922a;padding-bottom:.3rem;margin-bottom:1rem;">Les types d'inversion</h2>
+  <table style="width:100%;border-collapse:collapse;font-size:.9rem;margin-bottom:1.5rem;">
+    <thead>
+      <tr style="background:#f5f0e0;">
+        <th style="padding:.5rem;text-align:left;border:1px solid #ddd;">Type</th>
+        <th style="padding:.5rem;text-align:left;border:1px solid #ddd;">Phrase affirmative</th>
+        <th style="padding:.5rem;text-align:left;border:1px solid #ddd;">Phrase interrogative</th>
+        <th style="padding:.5rem;text-align:left;border:1px solid #ddd;">Règle clé</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="padding:.5rem;border:1px solid #ddd;">Inversion simple</td><td style="padding:.5rem;border:1px solid #ddd;">Tu viens.</td><td style="padding:.5rem;border:1px solid #ddd;font-weight:700;">Viens-tu ?</td><td style="padding:.5rem;border:1px solid #ddd;">Verbe–sujet pronom</td></tr>
+      <tr><td style="padding:.5rem;border:1px solid #ddd;">-t- euphonique</td><td style="padding:.5rem;border:1px solid #ddd;">Il parle. / Elle aime.</td><td style="padding:.5rem;border:1px solid #ddd;font-weight:700;">Parle-t-il ? / Aime-t-elle ?</td><td style="padding:.5rem;border:1px solid #ddd;">Verbe en voyelle → ajouter -t-</td></tr>
+      <tr><td style="padding:.5rem;border:1px solid #ddd;">Inversion complexe</td><td style="padding:.5rem;border:1px solid #ddd;">Marie vient.</td><td style="padding:.5rem;border:1px solid #ddd;font-weight:700;">Marie vient-elle ?</td><td style="padding:.5rem;border:1px solid #ddd;">Nom + verbe + pronom reprise</td></tr>
+      <tr><td style="padding:.5rem;border:1px solid #ddd;">Verbe pronominal</td><td style="padding:.5rem;border:1px solid #ddd;">Tu te lèves.</td><td style="padding:.5rem;border:1px solid #ddd;font-weight:700;">Te lèves-tu ?</td><td style="padding:.5rem;border:1px solid #ddd;">Pronom réfléchi reste avant le verbe</td></tr>
+      <tr><td style="padding:.5rem;border:1px solid #ddd;">Temps composé</td><td style="padding:.5rem;border:1px solid #ddd;">Il a mangé.</td><td style="padding:.5rem;border:1px solid #ddd;font-weight:700;">A-t-il mangé ?</td><td style="padding:.5rem;border:1px solid #ddd;">Auxiliaire inversé, part. passé reste</td></tr>
+      <tr><td style="padding:.5rem;border:1px solid #ddd;">Inversion avec "je"</td><td style="padding:.5rem;border:1px solid #ddd;">Je peux / Je dois / Je suis</td><td style="padding:.5rem;border:1px solid #ddd;font-weight:700;">Puis-je / Dois-je / Suis-je</td><td style="padding:.5rem;border:1px solid #ddd;">Formes spéciales – "peux-je" ✗</td></tr>
+    </tbody>
+  </table>
+
+  <h2 style="font-size:1.1rem;border-bottom:2px solid #b83232;padding-bottom:.3rem;margin-bottom:1rem;color:#b83232;">⚠️ Les pièges à éviter</h2>
+  <ul style="font-size:.88rem;line-height:2;padding-left:1.2rem;margin-bottom:1.5rem;">
+    <li>Le -t- euphonique n'est <strong>pas nécessaire</strong> si le verbe se termine déjà par <strong>-t ou -d</strong> : "Répond-il ?" ✓ (pas "Répond-t-il" ✗)</li>
+    <li>"Peux-je" n'existe <strong>pas</strong> en français → on dit uniquement <strong>"Puis-je"</strong></li>
+    <li>Avec un sujet nominal, la reprise pronominale doit <strong>s'accorder en genre et nombre</strong> : "Les enfants dorment-ils ?" ✓</li>
+    <li>Dans les verbes pronominaux, le pronom réfléchi reste <strong>avant le verbe</strong> : "Se lève-t-il ?" ✓ (pas "Lève-il se ?" ✗)</li>
+    <li>Le trait d'union est <strong>obligatoire</strong> dans l'inversion : "Vient-il ?" et jamais "Vient il ?"</li>
+    <li>À la 1re pers. sing. des temps composés : <strong>"Ai-je mangé ?"</strong> est correct mais rare à l'oral</li>
+  </ul>
+
+  <h2 style="font-size:1.1rem;border-bottom:2px solid #1d4e8f;padding-bottom:.3rem;margin-bottom:1rem;">📝 Système de points</h2>
+  <table style="border-collapse:collapse;font-size:.88rem;">
+    <tr><td style="padding:.4rem 1rem .4rem 0;border-right:1px solid #ddd;padding-right:1rem;">🟢 Facile</td><td style="padding:.4rem 0 .4rem 1rem;">1 point</td></tr>
+    <tr><td style="padding:.4rem 1rem .4rem 0;border-right:1px solid #ddd;padding-right:1rem;">🔵 Moyenne</td><td style="padding:.4rem 0 .4rem 1rem;">2 points</td></tr>
+  </table>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  DATA – 24 CARDS (facile + moyenne uniquement)
+// ═══════════════════════════════════════════════════
+const cards = [
+
+  // ── FACILE (1 pt) – inversion simple ──────────────────
+  {
+    cat: 'facile', pts: 1, type: 'Inversion simple',
+    phrase: 'Tu parles français.',
+    reponse: 'Parles-tu français ?',
+    hint: 'Pronom sujet + verbe : il suffit d\'inverser.',
+    expl: 'Le verbe "parles" (2e pers. sing.) s\'inverse avec son sujet "tu" : Parles-tu.',
+    piege: null
+  },
+  {
+    cat: 'facile', pts: 1, type: 'Inversion simple',
+    phrase: 'Vous comprenez la leçon.',
+    reponse: 'Comprenez-vous la leçon ?',
+    hint: '2e personne du pluriel — inversion directe.',
+    expl: '"Comprenez" finit par -z. On inverse directement sans ajouter de -t- : Comprenez-vous.',
+    piege: null
+  },
+  {
+    cat: 'facile', pts: 1, type: 'Inversion simple',
+    phrase: 'Nous partons ce soir.',
+    reponse: 'Partons-nous ce soir ?',
+    hint: '1re personne du pluriel.',
+    expl: '"Partons" se termine par -s. On inverse directement : Partons-nous.',
+    piege: null
+  },
+  {
+    cat: 'facile', pts: 1, type: 'Inversion simple',
+    phrase: 'Ils arrivent demain.',
+    reponse: 'Arrivent-ils demain ?',
+    hint: '3e personne du pluriel.',
+    expl: '"Arrivent" se termine par -t. Inversion directe : Arrivent-ils.',
+    piege: null
+  },
+
+  // ── FACILE – -t- euphonique ──────────────────
+  {
+    cat: 'facile', pts: 1, type: '-t- euphonique',
+    phrase: 'Elle aime le chocolat.',
+    reponse: 'Aime-t-elle le chocolat ?',
+    hint: 'Le verbe finit par une voyelle… ajoutez quelque chose entre les deux !',
+    expl: '"Aime" finit en -e (voyelle). Pour éviter le hiatus avec "elle", on ajoute -t- euphonique : Aime-t-elle.',
+    piege: null
+  },
+  {
+    cat: 'facile', pts: 1, type: '-t- euphonique',
+    phrase: 'Il joue au football.',
+    reponse: 'Joue-t-il au football ?',
+    hint: 'Voyelle finale du verbe + pronom commençant par une voyelle.',
+    expl: '"Joue" + "il" créerait un hiatus. Le -t- euphonique s\'intercale : Joue-t-il.',
+    piege: null
+  },
+  {
+    cat: 'facile', pts: 1, type: '-t- euphonique',
+    phrase: 'Elle habite à Paris.',
+    reponse: 'Habite-t-elle à Paris ?',
+    hint: 'Même règle : voyelle finale + pronom "elle".',
+    expl: '"Habite" finit en -e. On insère -t- pour la fluidité : Habite-t-elle.',
+    piege: null
+  },
+  {
+    cat: 'facile', pts: 1, type: 'Inversion simple',
+    phrase: 'Tu travailles beaucoup.',
+    reponse: 'Travailles-tu beaucoup ?',
+    hint: 'Verbe du 1er groupe à la 2e pers. sing.',
+    expl: '"Travailles" finit en -s. On inverse directement : Travailles-tu.',
+    piege: null
+  },
+
+  // ── MOYENNE (2 pts) – inversion complexe (nom propre) ──
+  {
+    cat: 'moyenne', pts: 2, type: 'Inversion complexe',
+    phrase: 'Marie est heureuse.',
+    reponse: 'Marie est-elle heureuse ?',
+    hint: 'Sujet = nom propre féminin. Conservez-le et ajoutez un pronom.',
+    expl: 'On garde "Marie" en tête, on ajoute le pronom de reprise "elle" après le verbe "est" : Marie est-elle. Pas de -t- car "est" finit déjà en -t.',
+    piege: null
+  },
+  {
+    cat: 'moyenne', pts: 2, type: 'Inversion complexe',
+    phrase: 'Paul part en vacances.',
+    reponse: 'Paul part-il en vacances ?',
+    hint: 'Sujet = nom propre masculin.',
+    expl: '"Paul" reste en tête. On reprend par "il" après "part" (qui finit en -t) : Paul part-il.',
+    piege: null
+  },
+  {
+    cat: 'moyenne', pts: 2, type: 'Inversion complexe',
+    phrase: 'Sophie aime la musique.',
+    reponse: 'Sophie aime-t-elle la musique ?',
+    hint: 'Nom propre + verbe en voyelle. Deux choses à gérer !',
+    expl: '"Sophie" reste en tête. "Aime" finit en -e → -t- euphonique + reprise "elle" : Sophie aime-t-elle.',
+    piege: null
+  },
+  {
+    cat: 'moyenne', pts: 2, type: 'Inversion complexe',
+    phrase: 'Le professeur explique la règle.',
+    reponse: 'Le professeur explique-t-il la règle ?',
+    hint: 'Groupe nominal sujet masculin singulier.',
+    expl: '"Le professeur" reste en tête. "Explique" finit en -e → -t- euphonique + reprise "il" : Le professeur explique-t-il.',
+    piege: null
+  },
+  {
+    cat: 'moyenne', pts: 2, type: 'Inversion complexe',
+    phrase: 'Les élèves écoutent attentivement.',
+    reponse: 'Les élèves écoutent-ils attentivement ?',
+    hint: 'Groupe nominal pluriel. Quel pronom de reprise ?',
+    expl: '"Les élèves" = masculin pluriel → reprise "ils". "Écoutent" finit en -t, pas de -t- à ajouter : Les élèves écoutent-ils.',
+    piege: null
+  },
+  {
+    cat: 'moyenne', pts: 2, type: 'Inversion complexe',
+    phrase: 'La directrice signe le document.',
+    reponse: 'La directrice signe-t-elle le document ?',
+    hint: 'Groupe nominal féminin singulier + verbe en voyelle.',
+    expl: '"La directrice" → reprise "elle". "Signe" finit en -e → -t- euphonique : La directrice signe-t-elle.',
+    piege: null
+  },
+  {
+    cat: 'moyenne', pts: 2, type: 'Inversion complexe',
+    phrase: 'Les filles dansent bien.',
+    reponse: 'Les filles dansent-elles bien ?',
+    hint: 'Groupe nominal féminin pluriel.',
+    expl: '"Les filles" = féminin pluriel → reprise "elles". "Dansent" finit en -t : Les filles dansent-elles.',
+    piege: null
+  },
+  {
+    cat: 'moyenne', pts: 2, type: 'Inversion complexe',
+    phrase: 'Luc et Tom jouent ensemble.',
+    reponse: 'Luc et Tom jouent-ils ensemble ?',
+    hint: 'Deux sujets masculins. Quel pronom ?',
+    expl: 'Deux sujets masculins → reprise "ils". "Jouent" finit en -t : Luc et Tom jouent-ils.',
+    piege: null
+  },
+  {
+    cat: 'moyenne', pts: 2, type: 'Inversion complexe',
+    phrase: 'Mon frère arrive ce soir.',
+    reponse: 'Mon frère arrive-t-il ce soir ?',
+    hint: 'Groupe nominal masculin singulier + verbe en voyelle.',
+    expl: '"Mon frère" → reprise "il". "Arrive" finit en -e → -t- euphonique : Mon frère arrive-t-il.',
+    piege: null
+  },
+
+  // ── MOYENNE – verbe se terminant en -t ou -d ──
+  {
+    cat: 'moyenne', pts: 2, type: 'Pas de -t- ajouté',
+    phrase: 'Elle répond toujours vite.',
+    reponse: 'Répond-elle toujours vite ?',
+    hint: 'Regardez bien la terminaison du verbe avant d\'ajouter quoi que ce soit.',
+    expl: '"Répond" finit déjà en -d. On n\'ajoute PAS de -t- supplémentaire : Répond-elle.',
+    piege: '⚠️ "Répond-t-elle" est FAUX. Le -d final suffit pour faire la liaison.'
+  },
+  {
+    cat: 'moyenne', pts: 2, type: 'Pas de -t- ajouté',
+    phrase: 'Il attend son ami.',
+    reponse: 'Attend-il son ami ?',
+    hint: 'Le verbe finit par -d. Besoin du -t- ou pas ?',
+    expl: '"Attend" finit en -d. On inverse directement sans -t- : Attend-il.',
+    piege: '⚠️ "Attend-t-il" est FAUX. Le -d assure la liaison : on ne double pas la consonne.'
+  },
+
+  // ── MOYENNE – temps composés ──
+  {
+    cat: 'moyenne', pts: 2, type: 'Temps composé',
+    phrase: 'Tu as vu ce film.',
+    reponse: 'As-tu vu ce film ?',
+    hint: 'Aux temps composés, c\'est l\'auxiliaire qui s\'inverse.',
+    expl: 'On inverse l\'auxiliaire "as" avec "tu". Le participe passé "vu" reste en place : As-tu vu.',
+    piege: null
+  },
+  {
+    cat: 'moyenne', pts: 2, type: 'Temps composé',
+    phrase: 'Ils sont partis hier.',
+    reponse: 'Sont-ils partis hier ?',
+    hint: 'Auxiliaire être + sujet pronom pluriel.',
+    expl: '"Sont" s\'inverse avec "ils". "Partis" reste après : Sont-ils partis.',
+    piege: null
+  },
+  {
+    cat: 'moyenne', pts: 2, type: 'Temps composé',
+    phrase: 'Elle a téléphoné ce matin.',
+    reponse: 'A-t-elle téléphoné ce matin ?',
+    hint: 'Auxiliaire en voyelle + pronom "elle".',
+    expl: '"A" finit en voyelle + "elle" commence par voyelle → -t- euphonique : A-t-elle téléphoné.',
+    piege: null
+  },
+  {
+    cat: 'moyenne', pts: 2, type: 'Temps composé',
+    phrase: 'Marie est arrivée en retard.',
+    reponse: 'Marie est-elle arrivée en retard ?',
+    hint: 'Sujet nominal + temps composé. Double défi !',
+    expl: '"Marie" reste en tête. On inverse l\'auxiliaire "est" avec le pronom de reprise "elle" : Marie est-elle arrivée.',
+    piege: null
+  },
+];
+
+
+// ═══════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════
+let state = {
+  deck: [],
+  current: 0,
+  scores: [0, 0],
+  activePlayer: 0, // 0 = J1, 1 = J2
+  revealed: false,
+  totalTime: 15 * 60,
+  timeLeft: 15 * 60,
+  timer: null,
+  cardsPlayed: 0
+};
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Builds a deck ordered by difficulty, shuffled within each level,
+// so consecutive pairs share the same level (J1 & J2 get equal challenge).
+function buildProgressiveDeck(cards) {
+  const order = ['facile', 'moyenne'];
+  const deck = [];
+  for (const level of order) {
+    const group = shuffle(cards.filter(c => c.cat === level));
+    const even = group.length % 2 === 0 ? group : group.slice(0, group.length - 1);
+    deck.push(...even);
+  }
+  return deck;
+}
+
+function startGame() {
+  state.deck = buildProgressiveDeck(cards);
+  state.current = 0;
+  state.scores = [0, 0];
+  state.activePlayer = 0;
+  state.timeLeft = state.totalTime;
+  state.cardsPlayed = 0;
+  showScreen('game');
+  renderCard();
+  startTimer();
+}
+
+function resetGame() {
+  clearInterval(state.timer);
+  showScreen('intro');
+}
+
+// ═══════════════════════════════════════════════════
+//  SCREENS
+// ═══════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════════════
+function startTimer() {
+  clearInterval(state.timer);
+  state.timer = setInterval(() => {
+    state.timeLeft--;
+    updateTimer();
+    if (state.timeLeft <= 0) {
+      clearInterval(state.timer);
+      endGame();
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const m = Math.floor(state.timeLeft / 60).toString().padStart(2, '0');
+  const s = (state.timeLeft % 60).toString().padStart(2, '0');
+  const el = document.getElementById('timer');
+  el.textContent = `${m}:${s}`;
+  el.className = 'timer-display';
+  if (state.timeLeft <= 60) el.classList.add('danger');
+  else if (state.timeLeft <= 180) el.classList.add('warning');
+}
+
+// ═══════════════════════════════════════════════════
+//  CARD RENDERING
+// ═══════════════════════════════════════════════════
+const catLabels = { facile:'⬤ Facile', moyenne:'⬤ Moyenne', difficile:'⬤ Difficile', piege:'☠ Piège !' };
+const catEmoji = { facile:'🟢', moyenne:'🔵', difficile:'🟣', piege:'🔴' };
+
+function renderCard() {
+  if (state.current >= state.deck.length) { endGame(); return; }
+  const card = state.deck[state.current];
+  state.revealed = false;
+
+  const el = document.getElementById('main-card');
+  el.className = `card cat-${card.cat}`;
+  el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+
+  document.getElementById('card-cat').textContent = catLabels[card.cat];
+  document.getElementById('card-cat').className = `cat-badge cat-${card.cat}`;
+  document.getElementById('card-type').textContent = card.type;
+  document.getElementById('card-pts').textContent = `+${card.pts} pt${card.pts > 1 ? 's' : ''}`;
+  document.getElementById('phrase-text').textContent = card.phrase;
+  document.getElementById('hint-text').textContent = '💡 ' + card.hint;
+  document.getElementById('answer-text').textContent = card.reponse;
+  document.getElementById('answer-explanation').textContent = card.expl;
+
+  const piege = document.getElementById('piege-alert');
+  if (card.piege) {
+    piege.classList.add('show');
+    document.getElementById('piege-text').textContent = card.piege;
+  } else {
+    piege.classList.remove('show');
+  }
+
+  const ans = document.getElementById('answer-section');
+  ans.classList.remove('revealed');
+  document.getElementById('reveal-btn').style.display = '';
+  document.getElementById('score-btns').style.display = 'none';
+
+  const pLabel = state.activePlayer === 0 ? 'Joueur 1' : 'Joueur 2';
+  document.getElementById('turn-indicator').textContent = `→ Tour du ${pLabel}`;
+  document.getElementById('pts-label1').textContent = card.pts;
+  document.getElementById('pts-label2').textContent = card.pts;
+
+  updateScoreUI();
+  updateProgress();
+}
+
+function updateScoreUI() {
+  document.getElementById('s1').textContent = state.scores[0];
+  document.getElementById('s2').textContent = state.scores[1];
+
+  const b1 = document.getElementById('score1');
+  const b2 = document.getElementById('score2');
+
+  if (state.activePlayer === 0) {
+    b1.classList.add('active-player'); b2.classList.remove('active-player');
+    b1.querySelector('.player-label').textContent = '✦ à toi !';
+    b2.querySelector('.player-label').textContent = 'en attente…';
+  } else {
+    b2.classList.add('active-player'); b1.classList.remove('active-player');
+    b2.querySelector('.player-label').textContent = '✦ à toi !';
+    b1.querySelector('.player-label').textContent = 'en attente…';
+  }
+}
+
+function updateProgress() {
+  const total = state.deck.length;
+  const pct = (state.current / total * 100).toFixed(0);
+  document.getElementById('progress-text').textContent = `${state.current + 1} / ${total}`;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+// ═══════════════════════════════════════════════════
+//  ACTIONS
+// ═══════════════════════════════════════════════════
+function revealAnswer() {
+  document.getElementById('answer-section').classList.add('revealed');
+  document.getElementById('reveal-btn').style.display = 'none';
+  document.getElementById('score-btns').style.display = 'flex';
+  state.revealed = true;
+}
+
+function givePoint(player) {
+  const card = state.deck[state.current];
+  state.scores[player - 1] += card.pts;
+
+  // Bump animation
+  const box = document.getElementById(`score${player}`);
+  box.classList.remove('score-bump'); void box.offsetWidth;
+  box.classList.add('score-bump');
+
+  if (card.pts >= 4) spawnConfetti();
+  nextCard();
+}
+
+function nextCard() {
+  state.current++;
+  state.cardsPlayed++;
+  state.activePlayer = 1 - state.activePlayer;
+  if (state.current >= state.deck.length) { endGame(); return; }
+  renderCard();
+}
+
+// ═══════════════════════════════════════════════════
+//  CONFETTI
+// ═══════════════════════════════════════════════════
+function spawnConfetti() {
+  const colors = ['#c8922a','#f0c96a','#1d4e8f','#2a7a4b','#b83232','#fdf6e3'];
+  for (let i = 0; i < 30; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.width = (Math.random() * 12 + 6) + 'px';
+    piece.style.height = (Math.random() * 12 + 6) + 'px';
+    piece.style.borderRadius = Math.random() > .5 ? '50%' : '0';
+    piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    piece.style.animationDelay = Math.random() * .5 + 's';
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 4000);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  END GAME
+// ═══════════════════════════════════════════════════
+function endGame() {
+  clearInterval(state.timer);
+  showScreen('result');
+
+  const [s1, s2] = state.scores;
+  let title, winner;
+  if (s1 > s2) { winner = 'Joueur 1'; title = `Bravo <em>Joueur 1</em> !`; }
+  else if (s2 > s1) { winner = 'Joueur 2'; title = `Bravo <em>Joueur 2</em> !`; }
+  else { winner = 'les deux joueurs'; title = `Égalité parfaite <em>!</em>`; }
+
+  document.getElementById('result-title').innerHTML = title;
+  document.getElementById('winner-name').textContent = winner;
+
+  const podium = document.getElementById('podium');
+  if (s1 >= s2) {
+    podium.innerHTML = `
+      <div class="podium-box winner"><div class="podium-place">🥇</div><div class="podium-name">Joueur 1</div><div class="podium-score">${s1} points</div></div>
+      <div class="podium-box"><div class="podium-place">🥈</div><div class="podium-name">Joueur 2</div><div class="podium-score">${s2} points</div></div>
+    `;
+  } else {
+    podium.innerHTML = `
+      <div class="podium-box winner"><div class="podium-place">🥇</div><div class="podium-name">Joueur 2</div><div class="podium-score">${s2} points</div></div>
+      <div class="podium-box"><div class="podium-place">🥈</div><div class="podium-name">Joueur 1</div><div class="podium-score">${s1} points</div></div>
+    `;
+  }
+
+  const elapsed = state.totalTime - state.timeLeft;
+  const mm = Math.floor(elapsed / 60);
+  const ss = elapsed % 60;
+  document.getElementById('stats-row').innerHTML = `
+    <span>⏱ Durée : ${mm}m ${ss}s</span>
+    <span>🃏 Cartes jouées : ${state.cardsPlayed} / ${state.deck.length}</span>
+    <span>📊 Total points : ${s1 + s2}</span>
+  `;
+
+  spawnConfetti();
+}
+
+// ═══════════════════════════════════════════════════
+//  KEYBOARD
+// ═══════════════════════════════════════════════════
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('game').classList.contains('active')) {
+    if (e.code === 'Space' && !state.revealed) { e.preventDefault(); revealAnswer(); }
+    if (e.code === 'ArrowRight' && state.revealed) nextCard();
+  }
+});
+</script>
+</body>
+</html>
